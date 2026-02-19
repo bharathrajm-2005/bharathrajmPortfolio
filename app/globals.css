@@ -1,15 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+
+  /* Golden/Orange Color Palette */
+  --gold-light: #F9F295;
+  --gold-pale: #F7EF8A;
+  --gold-warm: #E0AA3E;
+  --gold-medium: #DFBD49;
+  --gold-deep: #D2AC47;
+  --gold-dark: #AE8625;
+  --gold-darker: #926F36;
+  --gold-orange: #B86A46;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
+  --font-orbitron: var(--font-orbitron);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,7 +33,42 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  cursor: default !important;
+}
+
+/* Ensure all text elements use readable font by default */
+p, span, div, a, li, label, input, textarea, button {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Ensure cursor is visible */
+a, button {
+  cursor: pointer !important;
+}
+
+input, textarea {
+  cursor: text !important;
+}
+
+/* Ensure canvas doesn't hide cursor */
+canvas {
+  cursor: inherit !important;
+}
+
+.font-futuristic {
+  font-family: var(--font-orbitron), sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Use readable fonts for headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: normal;
 }
 
 /* Custom styles for creative portfolio */
@@ -44,10 +90,163 @@ body {
   animation: gradient 3s ease infinite;
 }
 
+/* Futuristic background animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  25% { transform: translateY(-20px) translateX(10px); }
+  50% { transform: translateY(-40px) translateX(-10px); }
+  75% { transform: translateY(-20px) translateX(10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; filter: drop-shadow(0 0 10px #fbbf24); }
+  50% { opacity: 0.8; filter: drop-shadow(0 0 20px #fbbf24); }
+}
+
+@keyframes circuit-flow {
+  0% { stroke-dashoffset: 1000; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes orbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+@keyframes tech-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+.float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.float-slower {
+  animation: float 12s ease-in-out infinite;
+}
+
+.pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.tech-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.tech-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(251, 191, 36, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(251, 191, 36, 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  animation: tech-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Hexagon pattern */
+.hex-bg {
+  background-image:
+    radial-gradient(circle, rgba(251, 191, 36, 0.08) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: 0 0;
+}
+
+/* Data stream animation */
+@keyframes data-flow {
+  0% {
+    background-position: 0% 0%, 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%, -100% -100%;
+  }
+}
+
+.data-stream {
+  animation: data-flow 8s linear infinite;
+}
+
+/* Golden/Orange Gradient Textures */
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.golden-gradient {
+  background: linear-gradient(135deg, #F9F295, #E0AA3E, #D2AC47, #AE8625);
+  background-size: 400% 400%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.golden-gradient-subtle {
+  background: linear-gradient(135deg,
+    rgba(249, 242, 149, 0.15),
+    rgba(224, 170, 62, 0.15),
+    rgba(210, 172, 71, 0.15),
+    rgba(174, 134, 37, 0.15)
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 10s ease infinite;
+}
+
+.golden-glow {
+  filter: drop-shadow(0 0 20px rgba(224, 170, 62, 0.6));
+}
+
+.golden-text-gradient {
+  background: linear-gradient(135deg, #F9F295, #E0AA3E, #D2AC47);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mesh gradient background */
+.mesh-gradient {
+  background:
+    radial-gradient(circle at 20% 50%, rgba(249, 242, 149, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(224, 170, 62, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(174, 134, 37, 0.2) 0%, transparent 50%),
+    linear-gradient(135deg, #000000, #0a0a0a);
+  background-attachment: fixed;
+}
+
+/* Golden accent border */
+.golden-border {
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #F9F295, #E0AA3E, #D2AC47, #AE8625) 1;
+}
+
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  cursor: default !important;
 }
+
+html * {
+  cursor: inherit;
+}
+
+/* Optional: Hide default cursor for custom trail effect */
+/* Uncomment the lines below if you want to hide the default cursor */
+/*
+body {
+  cursor: none;
+}
+
+a, button, input, textarea, select {
+  cursor: none;
+}
+*/
 
 /* Custom scrollbar */
 ::-webkit-scrollbar {
@@ -59,10 +258,10 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  background: linear-gradient(to bottom, #AE8625, #E0AA3E, #F9F295);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(to bottom, #2563eb, #7c3aed);
+  background: linear-gradient(to bottom, #926F36, #F9F295, #F7EF8A);
 }
