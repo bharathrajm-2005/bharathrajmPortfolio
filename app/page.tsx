@@ -1812,7 +1812,7 @@ export default function Portfolio() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <Mail className="text-yellow-600" size={20} />
-                    <span className="text-gray-300">{process.env.CONTACT_EMAIL || 'mbharathrajcw.wp@gmail.com'}</span>
+                    <span className="text-gray-300">Contact me via form below</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="text-yellow-600" size={20} />

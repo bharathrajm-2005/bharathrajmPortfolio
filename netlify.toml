@@ -1,13 +1,11 @@
 [build]
-  command = "npm run build"
-  publish = "out"
-
-[build.environment]
-  SMTP_HOST = "smtp.gmail.com"
-  SMTP_PORT = "587"
-  SMTP_USER = "mbharathrajcw.wp@gmail.com"
-  SMTP_PASS = "zbfhbnapyyyvexlm"
-  CONTACT_EMAIL = "mbharathrajcw.wp@gmail.com"
+  command = "next build"
+  publish = ".next"
 
 [functions]
-  directory = "app/api"
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
