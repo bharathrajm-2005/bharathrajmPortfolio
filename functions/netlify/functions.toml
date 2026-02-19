@@ -1,0 +1,3 @@
+[functions]
+  included_files = ["app/api/send-email/route.ts"]
+  node_modules = ["nodemailer"]

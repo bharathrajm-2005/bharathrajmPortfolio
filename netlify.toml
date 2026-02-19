@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[build.environment]
+  SMTP_HOST = "smtp.gmail.com"
+  SMTP_PORT = "587"
+  SMTP_USER = "mbharathrajcw.wp@gmail.com"
+  SMTP_PASS = "zbfhbnapyyyvexlm"
+  CONTACT_EMAIL = "mbharathrajcw.wp@gmail.com"
+
+[functions]
+  directory = "app/api"

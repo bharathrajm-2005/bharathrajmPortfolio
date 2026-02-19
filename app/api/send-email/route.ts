@@ -5,11 +5,31 @@ export async function POST(request: NextRequest) {
   try {
     const { name, email, message } = await request.json();
 
+    // Debug environment variables
+    console.log('Environment variables available:', {
+      SMTP_HOST: process.env.SMTP_HOST ? 'SET' : 'NOT SET',
+      SMTP_PORT: process.env.SMTP_PORT ? 'SET' : 'NOT SET',
+      SMTP_USER: process.env.SMTP_USER ? 'SET' : 'NOT SET',
+      CONTACT_EMAIL: process.env.CONTACT_EMAIL ? 'SET' : 'NOT SET'
+    });
+
     // Validate required fields
     if (!name || !email || !message) {
       return NextResponse.json(
         { message: 'Missing required fields' },
         { status: 400 }
+      );
+    }
+
+    // Check if environment variables are available
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS || !process.env.CONTACT_EMAIL) {
+      console.error('Missing environment variables for email service');
+      return NextResponse.json(
+        { 
+          message: 'Email service not configured properly. Please check environment variables.',
+          error: 'ENV_MISSING'
+        },
+        { status: 500 }
       );
     }
 
@@ -111,10 +131,13 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Error sending email:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    
     return NextResponse.json(
       { 
         success: false, 
-        message: 'Failed to send email. Please try again later.' 
+        message: 'Failed to send email. Please try again later.',
+        error: errorMessage 
       },
       { status: 500 }
     );
