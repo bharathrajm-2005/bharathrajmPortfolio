@@ -26,6 +26,8 @@ import {
   Camera,
   Clock
 } from 'lucide-react';
+import CanvasCursor from '@/components/CanvasCursor';
+import VantaBackground from '@/components/VantaBackground';
 
 export default function Portfolio() {
   const [formData, setFormData] = useState({
@@ -45,6 +47,9 @@ export default function Portfolio() {
   });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mouseMovedRef = useRef(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitMessage, setSubmitMessage] = useState('');
 
   // Seeded random function for consistent SSR/client values
   const seededRandom = (seed: number) => {
@@ -53,9 +58,47 @@ export default function Portfolio() {
   };
   const [isMounted, setIsMounted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    window.location.href = `mailto:mbharathrajcw@gmail.com?subject=Portfolio Contact from ${formData.name}&body=${formData.message}`;
+    
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+    setSubmitMessage('');
+
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: formData.message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setSubmitStatus('success');
+        setSubmitMessage('Message sent successfully! I\'ll get back to you soon.');
+        // Reset form
+        setFormData({
+          name: '',
+          email: '',
+          message: ''
+        });
+      } else {
+        setSubmitStatus('error');
+        setSubmitMessage(data.message || 'Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+      setSubmitMessage('Network error. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -471,8 +514,11 @@ export default function Portfolio() {
         })}
       </div>
 
-      {/* Grid Pattern Overlay */}
-      <div className="fixed inset-0 bg-grid-pattern opacity-5 pointer-events-none" />
+      {/* Vanta Background */}
+      <VantaBackground />
+      
+      {/* Canvas Cursor Effect */}
+      <CanvasCursor />
       
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-black/80 backdrop-blur-xl z-50 border-b border-gray-800/50">
@@ -1766,7 +1812,7 @@ export default function Portfolio() {
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <Mail className="text-yellow-600" size={20} />
-                    <span className="text-gray-300">mbharathrajcw@gmail.com</span>
+                    <span className="text-gray-300">{process.env.CONTACT_EMAIL || 'mbharathrajcw.wp@gmail.com'}</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <Phone className="text-yellow-600" size={20} />
@@ -1834,15 +1880,41 @@ export default function Portfolio() {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full px-6 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 flex items-center justify-center gap-2 text-black"
-                  style={{ backgroundColor: '#E0AA3E' }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#F9F295'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#E0AA3E'}
-                >
-                  Send Message <Send size={20} />
-                </button>
+                <div className="space-y-4">
+                  {submitStatus !== 'idle' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`p-4 rounded-lg text-center ${
+                        submitStatus === 'success' 
+                          ? 'bg-green-900/50 border border-green-600/50 text-green-300' 
+                          : 'bg-red-900/50 border border-red-600/50 text-red-300'
+                      }`}
+                    >
+                      {submitMessage}
+                    </motion.div>
+                  )}
+                  
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full px-6 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 flex items-center justify-center gap-2 text-black disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    style={{ backgroundColor: '#E0AA3E' }}
+                    onMouseEnter={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#F9F295')}
+                    onMouseLeave={(e) => !isSubmitting && (e.currentTarget.style.backgroundColor = '#E0AA3E')}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        Send Message <Send size={20} />
+                      </>
+                    )}
+                  </button>
+                </div>
                 </form>
               </motion.div>
             </div>
